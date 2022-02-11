@@ -10,6 +10,9 @@ import cytoscape from 'cytoscape';
 export default class NetWorkCanvas extends Vue{
     private cy!: cytoscape.Core;
     private cyop!: cytoscape.CytoscapeOptions;
+    private router_count: number = 0;
+    private switch_count: number = 0;
+    private host_count: number = 0;
 
     mounted(){
       this.cyop = {
@@ -17,17 +20,27 @@ export default class NetWorkCanvas extends Vue{
 
         elements: {
           nodes:[
-            {
-              data: {id: 'Host'},
+            /*{
+              data: {id: 'Hosta'}, position: { x: 0, y: 0 },
+              classes: 'Host'
             },
             {
-              data: {id: 'Router'}
-            }
+              data: {id: 'Router'},
+              classes: 'Router'
+            },
+            {
+              data: {id: 'Switch'},
+              classes: 'Switch'
+            }*/
           ],
           edges:[
-            {
-              data: {source: 'Host', target: 'Router'}
-            }
+            /*{
+              data: {source: 'Hosta', target: 'Router'}
+            },{
+              data: {source: 'Hosta', target: 'Router'}
+            },{
+              data: {source: 'Hosta', target: 'Router'}
+            }*/
           ]
         },
         style: [
@@ -52,7 +65,7 @@ export default class NetWorkCanvas extends Vue{
              }
           },
           {
-            selector: '#Host',
+            selector: '.Host',
             style: {
               'background-image': "https://i.imgur.com/R1csOlU.jpg"
             }
@@ -72,7 +85,7 @@ export default class NetWorkCanvas extends Vue{
         ]
       }
       this.cy = cytoscape(this.cyop);
-      // console.log(this.cy)
+       console.log(this.cy)
     }
 
     public DropHandler(e: DragEvent): void{
@@ -83,12 +96,32 @@ export default class NetWorkCanvas extends Vue{
         //区別をつけるためボタンのIDを取得するようにした、重複しないならば別の実装でもかまわない
         if(data == "host"){
             nodetype="Host";
+            this.cy.add({
+              data: {id: 'Host'+this.host_count},
+              position: { x: 1000, y: 500 },
+              classes: 'Host'
+            });
+          this.host_count++;
         }else if(data == "router"){
             nodetype="Router";
+            this.cy.add({
+              data: {id: 'Router'+this.router_count},
+              classes: 'Router'
+            });
+          this.router_count++;
         }else if(data == "switch"){
+          console.log('manzi')
             nodetype="Switch";
+            this.cy.add({
+              data: {id: 'Switch'+this.switch_count},
+              position: { x: 1000, y: 500 },
+              classes: 'Switch'
+            });
+          this.switch_count++;
         }
         console.log(nodetype + 'が追加されました')
+        console.log(this.cy)
+        //this.cy.layout().off;
     }
 
     public DragOverHandler(event: DragEvent):void{
@@ -99,8 +132,8 @@ export default class NetWorkCanvas extends Vue{
 </script>
 <style scoped>
 #cy{
-    width: 600px;
-    height:400px;
+    width: 1000px;
+    height:500px;
     border: solid 1px;
     position: absolute;
 }
