@@ -14,7 +14,11 @@ export default class NetWorkCanvas extends Vue{
     private switch_count: number = 0;
     private host_count: number = 0;
 
+
     mounted(){
+      //this.cy.on('tap',function(e){
+//
+      //})
       this.cyop = {
         container: document.getElementById('cy'),
 
@@ -71,13 +75,13 @@ export default class NetWorkCanvas extends Vue{
             }
           },
           {
-            selector: '#Router',
+            selector: '.Router',
             style: {
               'background-image': "https://i.imgur.com/t5UZjW0.jpg"
             }
           },
           {
-            selector: '#Switch',
+            selector: '.Switch',
             style: {
               'background-image': "https://i.imgur.com/47f1aNF.jpg"
             }
@@ -88,9 +92,13 @@ export default class NetWorkCanvas extends Vue{
        console.log(this.cy)
     }
 
+    
+
     public DropHandler(e: DragEvent): void{
         console.log('b');
         let data: string = (event as DragEvent).dataTransfer!.getData("text/plain");
+        let x_position: number = (event as MouseEvent).offsetX;
+        let y_position: number = (event as MouseEvent).offsetY;
         let nodetype: string = "";
         
         //区別をつけるためボタンのIDを取得するようにした、重複しないならば別の実装でもかまわない
@@ -98,7 +106,7 @@ export default class NetWorkCanvas extends Vue{
             nodetype="Host";
             this.cy.add({
               data: {id: 'Host'+this.host_count},
-              position: { x: 1000, y: 500 },
+              position: { x: x_position, y: y_position },
               classes: 'Host'
             });
           this.host_count++;
@@ -106,6 +114,7 @@ export default class NetWorkCanvas extends Vue{
             nodetype="Router";
             this.cy.add({
               data: {id: 'Router'+this.router_count},
+              position: { x: x_position, y: y_position },
               classes: 'Router'
             });
           this.router_count++;
@@ -114,7 +123,7 @@ export default class NetWorkCanvas extends Vue{
             nodetype="Switch";
             this.cy.add({
               data: {id: 'Switch'+this.switch_count},
-              position: { x: 1000, y: 500 },
+              position: { x: x_position, y: y_position },
               classes: 'Switch'
             });
           this.switch_count++;
@@ -127,6 +136,8 @@ export default class NetWorkCanvas extends Vue{
     public DragOverHandler(event: DragEvent):void{
 
     }
+    
+    
 }
 
 </script>
