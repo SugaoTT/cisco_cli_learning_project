@@ -15,6 +15,21 @@ export default class NetWorkCanvas extends Vue{
     private host_count: number = 0;
 
 
+  
+
+    public childMethod(): void {
+      console.log('child');
+
+
+    this.cy.on('tap', 'node', function(event) {
+      console.log(event.target._private.data.id);
+      //console.log('host dayo')
+
+    });
+
+      console.log('end childMethod')
+    }
+
     mounted(){
       //this.cy.on('tap',function(e){
 //
@@ -71,19 +86,25 @@ export default class NetWorkCanvas extends Vue{
           {
             selector: '.Host',
             style: {
-              'background-image': "https://i.imgur.com/R1csOlU.jpg"
+              'background-image': "https://i.imgur.com/R1csOlU.jpg",
+              'label': 'data(id)',
+              'text-margin-y': 50
             }
           },
           {
             selector: '.Router',
             style: {
-              'background-image': "https://i.imgur.com/t5UZjW0.jpg"
+              'background-image': "https://i.imgur.com/t5UZjW0.jpg",
+              'label': 'data(id)',
+              'text-margin-y': 50
             }
           },
           {
             selector: '.Switch',
             style: {
-              'background-image': "https://i.imgur.com/47f1aNF.jpg"
+              'background-image': "https://i.imgur.com/47f1aNF.jpg",
+              'label': 'data(id)',
+              'text-margin-y': 50
             }
           }
         ]

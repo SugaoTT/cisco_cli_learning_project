@@ -4,6 +4,10 @@
       <p>{{ message }}</p>
       <p>{{ count }}</p>
 
+      <a @mouseover="countUp">
+        {{message}}
+    </a>
+
       <button class="router_button" draggable="true" @dragstart="DragStartHandler('router')"><span id = "router_image"></span><br>Router</button>
       <button class="switch_button" draggable="true" @dragstart="DragStartHandler('switch')"><span id = "switch_image"></span><br>Switch</button>
       <button class="host_button" draggable="true" @dragstart="DragStartHandler('host')"><span id = "host_image"></span><br>Host</button>
@@ -13,8 +17,11 @@
       <button @click="drawGraph">draw</button>
       
 
-      <div id="networkPanel">
-        <NetworkCanvas></NetworkCanvas>
+      <div id="networkPanel" >
+        <NetworkCanvas ref="networkCanvas" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas" ></NetworkCanvas>
+
+      
+
       </div>
   </div>
 </template>
@@ -38,10 +45,21 @@ export default class Client extends Vue {
     private message: string = "Hello World";
     private count: number = 0;
     private currentState = "start";
+    private isMouseOnNetworkCanvas: boolean = false;
+
+    $refs!: {
+      networkCanvas: NetworkCanvas
+    }
+
    // private cy = new cytoscape.Core();
     // private cy = new cytoscape.Core();
     //private cy!: cytoscape.Core;
     //private cyop!: cytoscape.CytoscapeOptions;
+
+    mounted(){
+      this.$refs.networkCanvas.childMethod();
+    }
+
 
     public countUp(){
         this.count++;
@@ -81,8 +99,25 @@ export default class Client extends Vue {
     (event as DragEvent).dataTransfer!.setDragImage(node_asset, -2, -2);
     }
 
-    
+    public test(): void{
+      console.log('aaa');
 
+      //if(this.isMouseOnNetworkCanvas === true){
+        
+      //}
+      
+      console.log('end test');
+    }
+
+    public mouseOverOnNetworkCanvas(): void{
+      this.isMouseOnNetworkCanvas = true;
+      console.log(this.isMouseOnNetworkCanvas)
+    }
+
+    public mouseLeaveOnNetworkCanvas(): void{
+      this.isMouseOnNetworkCanvas = false;
+      console.log(this.isMouseOnNetworkCanvas)
+    }
 
 
     /*
