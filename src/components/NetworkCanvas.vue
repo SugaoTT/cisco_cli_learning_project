@@ -14,7 +14,6 @@ export default class NetWorkCanvas extends Vue{
     private switch_count: number = 0;
     private host_count: number = 0;
 
-
   
 
     public childMethod(): void {
@@ -118,37 +117,45 @@ export default class NetWorkCanvas extends Vue{
     public DropHandler(e: DragEvent): void{
         console.log('b');
         let data: string = (event as DragEvent).dataTransfer!.getData("text/plain");
+        //let nodeID: string = (event as DragEvent).dataTransfer!.getData("nodeID");
+        let nodeID: string = "";
         let x_position: number = (event as MouseEvent).offsetX;
         let y_position: number = (event as MouseEvent).offsetY;
         let nodetype: string = "";
+
+        //console.log(data2)
         
         //区別をつけるためボタンのIDを取得するようにした、重複しないならば別の実装でもかまわない
         if(data == "host"){
+          nodeID = 'Host'+this.host_count++;
             nodetype="Host";
             this.cy.add({
-              data: {id: 'Host'+this.host_count},
+              data: {id: nodeID},
               position: { x: x_position, y: y_position },
               classes: 'Host'
             });
-          this.host_count++;
         }else if(data == "router"){
+          nodeID = 'Router'+this.router_count++;
             nodetype="Router";
             this.cy.add({
-              data: {id: 'Router'+this.router_count},
+              data: {id: nodeID},
               position: { x: x_position, y: y_position },
               classes: 'Router'
             });
-          this.router_count++;
         }else if(data == "switch"){
-          console.log('manzi')
+          nodeID = 'Switch'+this.switch_count++;
+          //console.log('manzi')
             nodetype="Switch";
             this.cy.add({
-              data: {id: 'Switch'+this.switch_count},
+              data: {id: nodeID},
               position: { x: x_position, y: y_position },
               classes: 'Switch'
             });
-          this.switch_count++;
         }
+        this.$emit("addNodeToList", nodeID);
+        //ノードIDをクライアントのリストに追加
+
+
         console.log(nodetype + 'が追加されました')
         console.log(this.cy)
         //this.cy.layout().off;

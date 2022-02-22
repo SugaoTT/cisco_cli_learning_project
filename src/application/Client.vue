@@ -12,18 +12,31 @@
       <button class="switch_button" draggable="true" @dragstart="DragStartHandler('switch')"><span id = "switch_image"></span><br>Switch</button>
       <button class="host_button" draggable="true" @dragstart="DragStartHandler('host')"><span id = "host_image"></span><br>Host</button>
 
+      <div id="consolePanel">
+        <select id="nodeSelect">
+              <option v-for="(node, key) in nodeList" :key="key">
+                {{ node }}
+              </option>
+            </select>
+
+        <TerminalConsole></TerminalConsole>
+
+        </div>
+
       <button @click="countUp">increment</button>
       
       <button @click="drawGraph">draw</button>
-      
+      <div id="my-window">テスト</div>
 
       <div id="networkPanel" >
-        <NetworkCanvas ref="networkCanvas" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas" ></NetworkCanvas>
-
-      
-
+        <NetworkCanvas ref="networkCanvas" @addNodeToList="addNodeToNodeList" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas"></NetworkCanvas>
       </div>
+      
+      
   </div>
+
+  
+
 </template>
 
 
@@ -31,12 +44,14 @@
 import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
 import cytoscape from 'cytoscape';
 import NetworkCanvas from '../components/NetworkCanvas.vue';
+import TerminalConsole from '../components/console/TerminalConsole.vue'
 
 
 
 @Component({
   components: {
-    NetworkCanvas
+    NetworkCanvas,
+    TerminalConsole
   },
 })
 
@@ -46,6 +61,10 @@ export default class Client extends Vue {
     private count: number = 0;
     private currentState = "start";
     private isMouseOnNetworkCanvas: boolean = false;
+    //private router_count: number = 0;
+    //private switch_count: number = 0;
+    //private host_count: number = 0;
+    private nodeList: Array<string> = [""];
 
     $refs!: {
       networkCanvas: NetworkCanvas
@@ -84,29 +103,48 @@ export default class Client extends Vue {
       console.log('a');
       //データを設定
     (event as DragEvent).dataTransfer!.setData("text/plain", data);
+    //(event as DragEvent).dataTransfer!.setData("test", "ABS");
 
     //ボタンに設定されているアイコンの画像データを設定
     let node_asset = new Image();
+    //let nodeID: string;
     if(data == 'host'){
+      //nodeID = 'Host'+this.host_count++;
+      //(event as DragEvent).dataTransfer!.setData('nodeID', nodeID);
+      //ノードリストにノードを追加
+      //this.nodeList.push(nodeID);
+
       //node_asset.src = "./assets/image/host.png";
     }else if(data == 'router'){
+      //nodeID = 'Router'+this.router_count++;
+      //(event as DragEvent).dataTransfer!.setData('nodeID', nodeID);
+      //this.nodeList.push(nodeID);
       //node_asset.src = "./assets/image/router.png";
     }else if(data == 'switch'){
+      //nodeID = 'Switch'+this.switch_count++;
+     // (event as DragEvent).dataTransfer!.setData('nodeID', nodeID);
+      //this.nodeList.push(nodeID);
       //node_asset.src = "./assets/image/switch.png";
     }
+    
 
     //画像を登録
     (event as DragEvent).dataTransfer!.setDragImage(node_asset, -2, -2);
     }
 
+    public addNodeToNodeList(nodeID: string): void{
+      this.nodeList.push(nodeID);
+      console.log(this.nodeList);
+    }
+
     public test(): void{
-      console.log('aaa');
+      //console.log('aaa');
 
       //if(this.isMouseOnNetworkCanvas === true){
         
       //}
       
-      console.log('end test');
+      //console.log('end test');
     }
 
     public mouseOverOnNetworkCanvas(): void{
@@ -284,4 +322,17 @@ justify-content:space-around;
 flex:0 0 33%;
 text-align:center!important;
 }
+
+#my-window {
+	resize: both;
+	overflow: auto;
+	width: 50%;
+	border-top: 1.4em solid #eee;
+	border-radius: 4px;
+	box-shadow: 0 0 2px 1px rgba(0,0,0,.1);
+	background: #fff;
+	padding: 1.2em .8em;
+	margin-bottom: 1.5em;
+}
+
 </style>
