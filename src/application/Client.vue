@@ -1,16 +1,17 @@
 <template>
   <div ip = "app">
-    <button @click="add_node">add_node</button>
-      <p>{{ message }}</p>
-      <p>{{ count }}</p>
+    <!--<button @click="add_node">add_node</button>-->
+    <!--  <p>{{ message }}</p>-->
+    <!--  <p>{{ count }}</p>-->
 
-      <a @mouseover="countUp">
-        {{message}}
-    </a>
-
+    <!--  <a @mouseover="countUp">-->
+    <!--    {{message}}-->
+    <!--</a>-->
+      
       <button class="router_button" draggable="true" @dragstart="DragStartHandler('router')"><span id = "router_image"></span><br>Router</button>
       <button class="switch_button" draggable="true" @dragstart="DragStartHandler('switch')"><span id = "switch_image"></span><br>Switch</button>
       <button class="host_button" draggable="true" @dragstart="DragStartHandler('host')"><span id = "host_image"></span><br>Host</button>
+      <button @click="connectMode">結線</button>  {{ connectStatus }}
 
       <div id="consolePanel">
         <select id="nodeSelect">
@@ -23,13 +24,13 @@
 
         </div>
 
-      <button @click="countUp">increment</button>
+      <!--<button @click="countUp">increment</button>-->
       
-      <button @click="drawGraph">draw</button>
-      <div id="my-window">テスト</div>
+      <!--<button @click="drawGraph">draw</button>-->
+      <!--<div id="my-window">テスト</div>-->
 
       <div id="networkPanel" >
-        <NetworkCanvas ref="networkCanvas" @addNodeToList="addNodeToNodeList" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas"></NetworkCanvas>
+        <NetworkCanvas ref="networkCanvas" @updateConnectStatus="updateConnectStatus" @addNodeToList="addNodeToNodeList" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas" :connectStatus="connectStatus"></NetworkCanvas>
       </div>
       
       
@@ -65,6 +66,7 @@ export default class Client extends Vue {
     //private switch_count: number = 0;
     //private host_count: number = 0;
     private nodeList: Array<string> = [""];
+    private connectStatus: string = "結線OFF";
 
     $refs!: {
       networkCanvas: NetworkCanvas
@@ -157,6 +159,18 @@ export default class Client extends Vue {
       console.log(this.isMouseOnNetworkCanvas)
     }
 
+    public connectMode(){
+      if(this.nodeList.length < 2){
+        this.connectStatus = "2個以上の機器を追加してください";
+      } else {
+        this.connectStatus = "結線元の機器を選択してください";
+
+      }
+    }
+
+    public updateConnectStatus(connectStatus: string){
+      this.connectStatus = connectStatus;
+    }
 
     /*
     mounted(){

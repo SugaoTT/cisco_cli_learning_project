@@ -13,20 +13,100 @@ export default class NetWorkCanvas extends Vue{
     private router_count: number = 0;
     private switch_count: number = 0;
     private host_count: number = 0;
+    //ケーブルを作成する際にケーブル名が重複することを避けるための値
+    //実際はNodeに関するインスタンスを作成し、そこで各ノード毎にケーブルの本数を管理すればいいと思われる。
+    private cable_count: number = 0;
 
-  
+    /**一時格納用の結線元ノード*/
+    private srcNode: string = "";
+    private dstNode: string = "";
+
+    @Prop({})
+    private connectStatus!: string;
 
     public childMethod(): void {
       console.log('child');
+      console.log(this.connectStatus);
+
+     /* if(this.connectStatus == "結線元の機器を選択してください"){
+        console.log("結線モードのコンソール");
+        let srcNode:string = "";
+        let dstNode:string = "";
+
+        this.cy.on('tap', 'node', function(event) {
+          srcNode = event.target._private.data.id;
+        });
+        this.srcNode = srcNode;
+
+        this.cy.on('tap', 'node', function(event) {
+          dstNode = event.target._private.data.id;
+        });
+        this.dstNode = dstNode;
+
+        console.log(this.srcNode+"=>"+this.dstNode);
+      }*/
+
+      let nodeData: string = "";
+      //コールバック関数なので自信のインスタンスを予め保持しておく
+      let me = this;
+      this.cy.on('tap', 'node', function(event) {
+        me.clickedNode(event.target._private.data.id);
 
 
-    this.cy.on('tap', 'node', function(event) {
-      console.log(event.target._private.data.id);
-      //console.log('host dayo')
-
+        //me.srcNode = event.target._private.data.id;
+        //console.log(event.target._private.data.id);
+        //console.log(me.srcNode);
+        
     });
+     /*   console.log(nodeData);
 
-      console.log('end childMethod')
+      console.log("A");
+      if(this.connectStatus == "結線元の機器を選択してください"){
+        this.srcNode = nodeData;
+        this.connectStatus = "結線先の機器を選択してください";
+        console.log(this.srcNode+"=>"+this.dstNode);
+      }
+
+      if(this.connectStatus == "結線先の機器を選択してください"){
+        this.dstNode = nodeData;
+        console.log(this.srcNode+"=>"+this.dstNode);
+      }
+
+      console.log('end childMethod')*/
+    }
+
+    public clickedNode(nodeID: string) {
+      console.log(nodeID);
+      console.log(this.connectStatus);
+      /**
+       * 結線操作の処理を記述
+       */
+      if(this.connectStatus == "結線元の機器を選択してください"){
+        this.srcNode = nodeID;
+        this.$emit("updateConnectStatus", "結線先の機器を選択してください");
+        //this.connectStatus = "結線先の機器を選択してください";
+        //this.$emit('connectStatus', this.connectStatus);
+      } else if(this.connectStatus == "結線先の機器を選択してください"){
+        this.dstNode = nodeID;
+        this.$emit("updateConnectStatus", "結線OFF");
+      }
+
+      if(this.srcNode != "" && this.dstNode != ""){
+        this.connect();
+        console.log(this.srcNode+"=>"+this.dstNode);
+
+        //初期化しておく
+        this.srcNode = "";
+        this.dstNode = "";
+      }
+
+
+    }
+
+    public connect(): void{
+      this.cy.add({
+              data: {id: this.srcNode+"To"+this.dstNode+this.cable_count++, source: this.srcNode, target: this.dstNode}
+            });
     }
 
     mounted(){
@@ -65,8 +145,8 @@ export default class NetWorkCanvas extends Vue{
           {
             selector: 'node',
             style: {
-              'height': 40,
-              'width': 40,
+              'height': 80,
+              'width': 80,
               'background-fit': 'cover',
               'backgroundColor': 'white'
               //'border-color': '#000',
@@ -87,7 +167,7 @@ export default class NetWorkCanvas extends Vue{
             style: {
               'background-image': "https://i.imgur.com/R1csOlU.jpg",
               'label': 'data(id)',
-              'text-margin-y': 50
+              'text-margin-y': 90
             }
           },
           {
@@ -95,7 +175,7 @@ export default class NetWorkCanvas extends Vue{
             style: {
               'background-image': "https://i.imgur.com/t5UZjW0.jpg",
               'label': 'data(id)',
-              'text-margin-y': 50
+              'text-margin-y': 90
             }
           },
           {
@@ -103,10 +183,11 @@ export default class NetWorkCanvas extends Vue{
             style: {
               'background-image': "https://i.imgur.com/47f1aNF.jpg",
               'label': 'data(id)',
-              'text-margin-y': 50
+              'text-margin-y': 90
             }
           }
-        ]
+        ],
+        wheelSensitivity: 0
       }
       this.cy = cytoscape(this.cyop);
        console.log(this.cy)
@@ -134,6 +215,7 @@ export default class NetWorkCanvas extends Vue{
               position: { x: x_position, y: y_position },
               classes: 'Host'
             });
+            //console.log(this.connectStatus);
         }else if(data == "router"){
           nodeID = 'Router'+this.router_count++;
             nodetype="Router";
