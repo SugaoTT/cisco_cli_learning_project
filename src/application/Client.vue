@@ -7,22 +7,16 @@
     <!--  <a @mouseover="countUp">-->
     <!--    {{message}}-->
     <!--</a>-->
-      
+      <header>
+　      <p class="logo">CISCO CLI LEARNING PROJECT<span>Ciscoネットワーク機器のコマンドを学習できるアプリケーションです</span></p>
+      </header>
+
       <button class="router_button" draggable="true" @dragstart="DragStartHandler('router')"><span id = "router_image"></span><br>Router</button>
       <button class="switch_button" draggable="true" @dragstart="DragStartHandler('switch')"><span id = "switch_image"></span><br>Switch</button>
       <button class="host_button" draggable="true" @dragstart="DragStartHandler('host')"><span id = "host_image"></span><br>Host</button>
       <button @click="connectMode">結線</button>  {{ connectStatus }}
 
-      <div id="consolePanel">
-        <select id="nodeSelect">
-              <option v-for="(node, key) in nodeList" :key="key">
-                {{ node }}
-              </option>
-            </select>
-
-        <TerminalConsole></TerminalConsole>
-
-        </div>
+      
 
       <!--<button @click="countUp">increment</button>-->
       
@@ -32,8 +26,36 @@
       <div id="networkPanel" >
         <NetworkCanvas ref="networkCanvas" @updateConnectStatus="updateConnectStatus" @addNodeToList="addNodeToNodeList" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas" :connectStatus="connectStatus"></NetworkCanvas>
       </div>
+
+      <div id="consolePanel">
+        <select id="nodeSelect">
+              <option v-for="(node, key) in nodeList" :key="key">
+                {{ node }}
+              </option>
+            </select>
+
+
+        <TerminalConsole></TerminalConsole>
+
+        </div>
       
-      
+      <footer>
+
+        <p class="logo">CISCO CLI LEARNING PROJECT<span></span></p>
+        <div class="footer-list">
+            <ul>
+              <li>Contact: <br>sugaya180141m@gmail.com</li>
+              <li>Privacy Policy</li>
+            </ul>
+          </div>
+
+    <!--<div class="footer-logo">朝活 -Asakatsu-</div>
+          <div class="footer-list">
+            <ul>
+              <li>Contact</li>
+            </ul>
+          </div>-->
+        </footer>
   </div>
 
   
@@ -284,6 +306,11 @@ export default class Client extends Vue {
   height:95px;
 }
 
+#consolePanel{
+  position: absolute;
+  left: 1050px;
+  float: right;
+}
 
 .flowbtn{
 font-family:'Arial',sans-serif;/* 好きなフォントを指定してね */
@@ -347,6 +374,62 @@ text-align:center!important;
 	background: #fff;
 	padding: 1.2em .8em;
 	margin-bottom: 1.5em;
+}
+
+header {
+	width: 100%;
+	line-height: 60px;
+	background: #3c3c3c;
+}
+/* ロゴ */
+header .logo {
+	padding: 0 20px;
+	font-size: 18px;
+	color: #fff;
+	letter-spacing: .2em;
+}
+/* テキスト */
+header .logo span {
+	margin-left: 10px;
+	font-size: 14px;
+	color: #fff;
+	letter-spacing: .1em;
+	vertical-align: middle;
+}
+.wrapper{
+    min-height: 100vh;
+    position: relative;/*←相対位置*/
+}
+
+footer {
+  width: 100%;
+  line-height: 30px;
+  background-color: #3c3c3c;
+  position: absolute;/*←絶対位置*/
+  bottom: 0; /*下に固定*/
+}
+
+footer .logo {
+  padding: 0 20px;
+	font-size: 18px;
+	color: #fff;
+	letter-spacing: .2em;
+}
+footer .logo span {
+	margin-left: 10px;
+	font-size: 14px;
+	color: #fff;
+	letter-spacing: .1em;
+	vertical-align: middle;
+}
+
+.footer-list li {
+  margin-bottom: 0px;
+  
+}
+
+.footer-list {
+  color: #fff;
 }
 
 </style>

@@ -145,9 +145,15 @@ export default class NetWorkCanvas extends Vue{
           {
             selector: 'node',
             style: {
-              'height': 80,
-              'width': 80,
+              'shape': 'rectangle',
               'background-fit': 'cover',
+              //'background-fit': 'cover',
+              'height': 55,
+              'width': 120,
+              //'height': 63,
+              //'width': 50,
+              //'background-fit': 'cover',
+              //"background-image-opacity": 0.5
               'backgroundColor': 'white'
               //'border-color': '#000',
              // 'border-width': 3,
@@ -158,32 +164,41 @@ export default class NetWorkCanvas extends Vue{
               selector: 'edge',
               style: {
                 'curve-style': 'bezier',
-                'width': 3,
+                'width': 2,
                 'line-color': 'black',
              }
           },
           {
             selector: '.Host',
             style: {
-              'background-image': "https://i.imgur.com/R1csOlU.jpg",
+              'height': 45,
+              'width': 45,
+              //'background-image': "https://i.imgur.com/R1csOlU.jpg",
+              'background-image': "https://i.imgur.com/h7oybht.jpg",
               'label': 'data(id)',
-              'text-margin-y': 90
+              'text-margin-y': 65
             }
           },
           {
             selector: '.Router',
             style: {
-              'background-image': "https://i.imgur.com/t5UZjW0.jpg",
+              'height': 35,
+              'width': 60,
+              //'background-image': "https://i.imgur.com/t5UZjW0.jpg",
+              'background-image': "https://i.imgur.com/XutTLFO.jpg",
               'label': 'data(id)',
-              'text-margin-y': 90
+              'text-margin-y': 53
             }
           },
           {
             selector: '.Switch',
             style: {
-              'background-image': "https://i.imgur.com/47f1aNF.jpg",
+              'height': 26,
+              'width': 60,
+              'background-image': "https://i.imgur.com/84nNcg5.jpg",
+              //'background-image': "https://i.imgur.com/47f1aNF.jpg",
               'label': 'data(id)',
-              'text-margin-y': 90
+              'text-margin-y': 45
             }
           }
         ],
