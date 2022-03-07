@@ -58,6 +58,7 @@ export default class NetWorkCanvas extends Vue{
         //console.log(me.srcNode);
         
     });
+    console.log(nodeData);
      /*   console.log(nodeData);
 
       console.log("A");
@@ -174,6 +175,8 @@ export default class NetWorkCanvas extends Vue{
               'height': 45,
               'width': 45,
               //'background-image': "https://i.imgur.com/R1csOlU.jpg",
+
+              "background-opacity": 0,
               'background-image': "https://i.imgur.com/h7oybht.jpg",
               'label': 'data(id)',
               'text-margin-y': 65
@@ -184,6 +187,7 @@ export default class NetWorkCanvas extends Vue{
             style: {
               'height': 35,
               'width': 60,
+              "background-opacity": 0,
               //'background-image': "https://i.imgur.com/t5UZjW0.jpg",
               'background-image': "https://i.imgur.com/XutTLFO.jpg",
               'label': 'data(id)',
@@ -195,6 +199,7 @@ export default class NetWorkCanvas extends Vue{
             style: {
               'height': 26,
               'width': 60,
+              "background-opacity": 0,
               'background-image': "https://i.imgur.com/84nNcg5.jpg",
               //'background-image': "https://i.imgur.com/47f1aNF.jpg",
               'label': 'data(id)',
@@ -202,7 +207,7 @@ export default class NetWorkCanvas extends Vue{
             }
           }
         ],
-        wheelSensitivity: 0
+        wheelSensitivity: 0.1
       }
       this.cy = cytoscape(this.cyop);
        console.log(this.cy)
@@ -215,8 +220,15 @@ export default class NetWorkCanvas extends Vue{
         let data: string = (event as DragEvent).dataTransfer!.getData("text/plain");
         //let nodeID: string = (event as DragEvent).dataTransfer!.getData("nodeID");
         let nodeID: string = "";
-        let x_position: number = (event as MouseEvent).offsetX;
-        let y_position: number = (event as MouseEvent).offsetY;
+        let mouse_x_position: number = (event as MouseEvent).offsetX;
+        let mouse_y_position: number = (event as MouseEvent).offsetY;
+
+        let canvas_position = this.cy.pan();
+        let zoom = this.cy.zoom();
+
+        let x_position: number = (mouse_x_position - canvas_position.x)/zoom;
+        let y_position: number = (mouse_y_position - canvas_position.y)/zoom;
+
         let nodetype: string = "";
 
         //console.log(data2)
