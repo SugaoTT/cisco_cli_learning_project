@@ -12,10 +12,13 @@
 Router, Switch, Hostを生成のためのボタンに関してはHTMLのDrag&Dropイベントを利用することで実現をした。
 
 ネットワークキャンバスに関しては、柔軟に機器の移動・配置を可能とするためにCytoScape.jsを利用した。
+
 ![image](https://user-images.githubusercontent.com/98573303/169933805-92ba81bf-5fbe-4a79-a47a-f93fee658adf.png)
 https://js.cytoscape.org/
 
+
 コマンド発行のためのコンソールは、xterm.jsを利用した。
+
 ![image](https://user-images.githubusercontent.com/98573303/169933903-4d376c67-b97d-4155-a0cc-4cf7f266fab7.png)
 https://xtermjs.org/
 
