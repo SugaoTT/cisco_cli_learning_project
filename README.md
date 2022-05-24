@@ -1,5 +1,9 @@
 # cisco_cli_learning_project
 本アプリケーションは私がVue.jsを用いてwebアプリケーション開発の練習をするためのものである。
+アプリケーションの画面は以下の通りである。
+![image](https://user-images.githubusercontent.com/98573303/169934387-779af3f3-d431-43d8-9fe8-3d6db832dce0.png)
+
+
 アプリケーションの開発目標は以下の通りである。
 
 ・Router, Switch, Hostを生成するためのボタンを作成し、ネットワークキャンバス上に追加できるようにする。
