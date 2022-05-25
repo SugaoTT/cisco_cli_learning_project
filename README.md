@@ -53,6 +53,7 @@ https://xtermjs.org/
 
 ## デモ動画
 本アプリケーションがどのようにして動作するのかを録画した動画を本リポジトリ上に載せている。
+ファイル名: demo-movie.mp4
 
 ## Project setup
 ```
