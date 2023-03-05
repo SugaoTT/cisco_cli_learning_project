@@ -1,5 +1,5 @@
 <template>
-    <div id="terminal"></div>
+    <div id=terminal></div>
 </template>
 
 <script lang="ts">
@@ -9,6 +9,7 @@ import 'xterm/lib/xterm.js'
 import { FitAddon } from 'xterm-addon-fit'
 import { AttachAddon } from 'xterm-addon-attach'
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import {GUIManager} from '../../script/gui/GUIManager';
 
 @Component
 export default class TerminalConsole extends Vue{
@@ -22,22 +23,76 @@ export default class TerminalConsole extends Vue{
     private term!: Terminal;
     private fitAddon!: FitAddon;
     //private terminalContainer: any = document.getElementById('terminal');
+    private terminalName: string = '';
+    //private z_index: number = 0;
+
+    private _zIndexOfTerminal: String | undefined = '';
+
+    @Prop({})
+    private windowName!: string;
+    //private windowPriority!: number;
 
     mounted(){
+        //GUIManager.guimanager.addWindow(this.windowName)
+        //this._zIndexOfTerminal = GUIManager.guimanager.getZIndexByWindowName(this.windowName);
+        //GUIManager.guimanager.addCountWindow();
+
+
+        //document.getElementById(this.terminalName)?.children.namedItem('')
+
+
+        /*
+        console.log('GUIMANAGERへの問い合わせ: '+GUIManager.guimanager.getZIndexByWindowName(this.windowName));
+
+        var zIndexOfTerminal = GUIManager.guimanager.getZIndexByWindowName(this.windowName);
+        while(zIndexOfTerminal == undefined){
+            console.log('待ってます');
+            zIndexOfTerminal = GUIManager.guimanager.getZIndexByWindowName(this.windowName);
+        }
+        this._zIndexOfTerminal = String(zIndexOfTerminal)
+        */
+
+        //this._zIndexOfTerminal = String(GUIManager.guimanager.countWindows+1);
+
+
+        //this.z_index = this.windowPriority+1;
+
+        console.log(this._zIndexOfTerminal)
+
+        this.terminalName = this.windowName+'OfTerminal'
+        console.log(this.terminalName)
+        console.log(document.getElementById('terminal')!)
+        document.getElementById('terminal')!.id=this.terminalName;
+        console.log(document.getElementById(this.terminalName)!)
+
         this.term = new Terminal({
             fontSize: 14,
             rows: 30,
             cursorBlink: true,
-            cursorStyle: 'underline'
+            cursorStyle: 'underline',
+            theme: {
+                foreground: "#000000", //Font
+                background: "#ffffff", //Background color
+                cursor: "#000000" //Set cursor
+            }
         });
         this.fitAddon = new FitAddon();
         this.term.loadAddon(this.fitAddon);
-        this.term.open(document.getElementById('terminal')!);
+        this.term.open(document.getElementById(this.terminalName)!);
         this.term.writeln('Welcome to the terminal by xterm.js');
         this.term.write('\r\n$ ');
         this.term.clear();
         this.fitAddon.fit();
         
+        //var elm =  document.getElementById(this.terminalName)!.style.zIndex='1';
+
+        //var windowPriority
+
+        console.log('winPro: '+this._zIndexOfTerminal)
+
+        //document.getElementById(this.windowName)!.style.position='absolute';
+        //document.getElementById(this.windowName)!.style.zIndex=String(Number(this._zIndexOfTerminal)+1);
+        //console.log(document.getElementById(this.windowName))
         //this.term.fit();
 
         var curr_line = '';
@@ -75,6 +130,21 @@ export default class TerminalConsole extends Vue{
             const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
         });*/
     }
+
+    //public setZIndexOfTerminal(windowPriority: number){
+    //    this._zIndexOfTerminal = String(windowPriority + 1);
+    //}
+
+    public childMethod(): void{
+        console.log('child');
+    }
+
+    public updateZIndex(zIndexOfTerminal: number): void{
+        this._zIndexOfTerminal = String(zIndexOfTerminal);
+        document.getElementById(this.windowName)!.style.position='absolute';
+        document.getElementById(this.windowName)!.style.zIndex=String(zIndexOfTerminal);
+    }
+
 }
 
 
@@ -83,10 +153,7 @@ export default class TerminalConsole extends Vue{
 </script>
 
 <style scoped>
-#terminal{
-	overflow: auto;
-    position: absolute;
-    width: 500px;
-    height:500px;
-}
+    .terminal{
+    }
+
 </style>

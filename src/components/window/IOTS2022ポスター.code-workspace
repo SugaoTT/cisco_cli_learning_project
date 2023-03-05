@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../研究/論文/IOTS2022ポスター"
+		},
+		{
+			"path": "../../../../../Vagrant"
+		},
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../npl"
+		},
+		{
+			"path": "../../../../../go"
+		}
+	],
+	"settings": {
+		"cloudlatex.projectId": 576860,
+		"cloudlatex.enabled": true
+	}
+}

@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "noImplicitAny": false, 
+    "noImplicitThis": false,  
     "target": "esnext",
     "module": "esnext",
     "strict": true,
@@ -32,8 +34,17 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
+    "tests/**/*.tsx",
+    //"src/**/*"
+  ]//,
+  //"compilerOptions":{
+  //  "allowJs": true,
+  //  "declaration": true,
+  //  "emitDeclarationOnly": true,
+  //  "outDir": "dist",
+  //  "declarationMap": true
+ // },
+  ,
   "exclude": [
     "node_modules"
   ]

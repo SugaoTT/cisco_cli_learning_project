@@ -8,13 +8,17 @@
     <!--    {{message}}-->
     <!--</a>-->
       <header>
-　      <p class="logo">CISCO CLI LEARNING PROJECT<span>Ciscoネットワーク機器のコマンドを学習できるアプリケーションです</span></p>
+　      <p class="logo">NETWORK EMULATOR</p>
       </header>
 
-      <button class="router_button" draggable="true" @dragstart="DragStartHandler('router')"><span id = "router_image"></span><br>Router</button>
-      <button class="switch_button" draggable="true" @dragstart="DragStartHandler('switch')"><span id = "switch_image"></span><br>Switch</button>
-      <button class="host_button" draggable="true" @dragstart="DragStartHandler('host')"><span id = "host_image"></span><br>Host</button>
-      <button @click="connectMode">結線</button>  {{ connectStatus }}
+
+
+      
+
+      <button class="net_equipment_button" draggable="true" @dragstart="DragStartHandler('router')"><span id = "router_image"></span><br>Router</button>
+      <button class="net_equipment_button" draggable="true" @dragstart="DragStartHandler('switch')"><span id = "switch_image"></span><br>Switch</button>
+      <button class="net_equipment_button" draggable="true" @dragstart="DragStartHandler('host')"><span id = "host_image"></span><br>Host</button>
+      <button class="connect_button" @click="connectMode"><span id = "connect_image"></span><br>Connect</button>  {{ connectStatus }}
 
       
 
@@ -23,10 +27,24 @@
       <!--<button @click="drawGraph">draw</button>-->
       <!--<div id="my-window">テスト</div>-->
 
+      
       <div id="networkPanel" >
-        <NetworkCanvas ref="networkCanvas" @updateConnectStatus="updateConnectStatus" @addNodeToList="addNodeToNodeList" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas" :connectStatus="connectStatus"></NetworkCanvas>
+        <NetworkCanvas ref="networkCanvas" @addWindow="addWindow" @updateConnectStatus="updateConnectStatus" @addNodeToList="addNodeToNodeList" v-on:mouseover.native="test" v-on:mouseleave.native="mouseLeaveOnNetworkCanvas" :connectStatus="connectStatus"></NetworkCanvas>
       </div>
 
+
+      <div id="windowPanel" >
+        <dl v-for="node in windowListVer2">
+          <component :windowName=node.nodeID :is="'Window'" v-bind="{id:node.nodeID}"/>
+        </dl>
+      </div>
+      
+      <!--<div id = dialog>
+        <DialogDrag></DialogDrag>
+      </div>-->
+      
+
+<!--
       <div id="consolePanel">
         <select id="nodeSelect">
               <option v-for="(node, key) in nodeList" :key="key">
@@ -36,26 +54,38 @@
 
 
         <TerminalConsole></TerminalConsole>
-
-        </div>
+      </div>
       
+      <div id="tabs">
+        <p>{{ 'aaa' }}</p>
+        <button @click="changeChild('Window')">ConponentA</button>
+        <button @click="changeChild('ComponentB')">ConponentB</button>
+      </div>
+
+      <dl v-for="child in childList">
+        <component :is="child" />
+      </dl>
+-->
+      <!--<component :is="currentChild" />-->
+
+
+        
+      <!--
       <footer>
-
-        <p class="logo">CISCO CLI LEARNING PROJECT<span></span></p>
-        <div class="footer-list">
+        <p class="logo">NETWORK EMULATOR<span></span></p>
+       <div class="footer-list">
             <ul>
-              <li>Contact: <br>sugaya180141m@gmail.com</li>
-              <li>Privacy Policy</li>
-            </ul>
-          </div>
-
+              <li>Contact: <br>sugaya180141m@gmail.com</li>-->
+               <!--<li>Privacy Policy</li>-->
+           <!-- </ul>
+        </div>-->
     <!--<div class="footer-logo">朝活 -Asakatsu-</div>
           <div class="footer-list">
             <ul>
               <li>Contact</li>
             </ul>
           </div>-->
-        </footer>
+       <!-- </footer>-->
   </div>
 
   
@@ -68,13 +98,22 @@ import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
 import cytoscape from 'cytoscape';
 import NetworkCanvas from '../components/NetworkCanvas.vue';
 import TerminalConsole from '../components/console/TerminalConsole.vue'
-
+import Window from '../components/window/Window.vue'
+import ComponentA from '../test/ComponentA.vue';
+import ComponentB from '../test/ComponentB.vue';
+import DialogDrag from '@/components/window/Dialog-Drag.vue';
+import {AbstractNode} from '../components/node/AbstractNode';
+import {GUIManager} from '../script/gui/GUIManager';
 
 
 @Component({
   components: {
     NetworkCanvas,
-    TerminalConsole
+    TerminalConsole,
+    Window,
+    ComponentA,
+    ComponentB,
+    DialogDrag
   },
 })
 
@@ -90,6 +129,21 @@ export default class Client extends Vue {
     private nodeList: Array<string> = [""];
     private connectStatus: string = "結線OFF";
 
+    currentChild: string = "ComponentB";
+    childList: Array<string> = [""];
+    windowList: Array<string> = [""];
+    private windowName = "Tanaka"
+    private windowXPosition: number = 0;
+    private windowYPosition: number = 0;
+
+    private windowListVer2: Array<AbstractNode> = [];
+
+    changeChild(name){
+      console.log(name);
+      this.currentChild = name;
+      this.childList.push(name);
+    }
+
     $refs!: {
       networkCanvas: NetworkCanvas
     }
@@ -100,6 +154,7 @@ export default class Client extends Vue {
     //private cyop!: cytoscape.CytoscapeOptions;
 
     mounted(){
+
       this.$refs.networkCanvas.childMethod();
     }
 
@@ -157,6 +212,8 @@ export default class Client extends Vue {
     }
 
     public addNodeToNodeList(nodeID: string): void{
+      //TODO: NodeIDをguimanagerから取るようにする
+      GUIManager.guimanager.addNode(new AbstractNode(nodeID, nodeID));
       this.nodeList.push(nodeID);
       console.log(this.nodeList);
     }
@@ -192,6 +249,21 @@ export default class Client extends Vue {
 
     public updateConnectStatus(connectStatus: string){
       this.connectStatus = connectStatus;
+    }
+
+    public addWindow(windowName: string){
+      console.log("addWindow")
+      this.windowList.push('Window')
+      let node: AbstractNode | null;
+      node = GUIManager.guimanager.selectedByUMID(windowName);
+      if(node != null && !node.isDisplayedWindow && this.connectStatus == "結線OFF"){
+        this.windowListVer2.push(node);
+        node.isDisplayedWindow = true;
+      }
+
+
+          
+      this.windowName = windowName
     }
 
     /*
@@ -240,13 +312,56 @@ export default class Client extends Vue {
   padding-top:10px;
 }
 
-#router_image{
-  background-image:url('../assets/router.png');
-  display:inline-block;
-  width:100px;
-  height:70px;
+.net_equipment_button{
+  border:1px solid #000000;
+  background-color:#ffffff;
+  width:120px;
+  height:125px;
 }
 
+.net_equipment_button:hover{
+  border:1px solid #000000;
+  background-color:#e2e2e2;
+  width:120px;
+  height:125px;
+}
+
+.connect_button{
+  border:1px solid #000000;
+  background-color:#ffffff;
+  width:120px;
+  height:125px;
+  margin-left: 300px;
+}
+
+.connect_button:hover{
+  border:1px solid #000000;
+  background-color:#e2e2e2;
+  width:120px;
+  height:125px;
+}
+
+#connect_image{
+  height:100px;
+  width:100px;
+  background-image:url('../assets/connect_clear.png');
+  display:inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+#router_image{
+  height:100px;
+  width:100px;
+  background-image:url('../assets/network_iconset/router_01/router_01.png');
+  display:inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+/*
 .router_button{
   border:1px solid #000000;
   background-color:#ffffff;
@@ -260,21 +375,27 @@ export default class Client extends Vue {
   background-color:#e2e2e2;
   width:120px;
   height:95px;
-}
+}*/
 
 #switch_image{
-  background-image:url('../assets/switch.png');
+  /*background-image:url('../assets/switch.png');
   display:inline-block;
   width:100px;
-  height:70px;
+  height:70px;*/
+  height:100px;
+  width:100px;
+  background-image:url('../assets/network_iconset/l2_switch/l2_switch.png');
+  display:inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 
-.switch_button{
-  border:1px solid #000000;
+/*
+.switch_button{border:1px solid #000000;
   background-color:#ffffff;
   width:120px;
   height:95px;
-  
 }
 
 .switch_button:hover{
@@ -282,86 +403,38 @@ export default class Client extends Vue {
   background-color:#e2e2e2;
   width:120px;
   height:95px;
-}
+}*/
 
 #host_image{
-  background-image:url('../assets/host.png');
-  display:inline-block;
+  /*background-image:url('../assets/host.png');*/
+  height:100px;
   width:100px;
-  height:70px;
+  background-image:url('../assets/network_iconset/desktop_pc/desktop_pc.png');
+  display:inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 
+/*
 .host_button{
   border:1px solid #000000;
   background-color:#ffffff;
   width:120px;
   height:95px;
-  
 }
 
 .host_button:hover{
   border:1px solid #000000;
   background-color:#e2e2e2;
   width:120px;
-  height:95px;
-}
+  height:125px;
+}*/
 
 #consolePanel{
   position: absolute;
   left: 1050px;
   float: right;
-}
-
-.flowbtn{
-font-family:'Arial',sans-serif;/* 好きなフォントを指定してね */
-border-radius:4px;
-position:relative;
-display:inline-block;
-width:66px;
-height:58px;
-font-size:30px;
-color:#fff!important;
-transition:.5s;
-text-decoration:none;
-box-shadow:0 1px 2px #999;
-}
-.flowbtn i{
-position:relative;
-bottom:5px;
-}
-.fl_tw1{
-background:#55acee;
-}
-
-/* ボタン内テキスト調整 */
-.flowbtn div{
-font-size:11px;	
-font-weight:bold;
-letter-spacing:0;
-position:relative;
-bottom:22px;
-}
-/* ボタンマウスホバー時 */
-.flowbtn:hover{
--webkit-transform:translateY(-5px);
--ms-transform:translateY(-5px);
-transform:translateY(-5px);
-text-decoration:none;
-}
-/* ulタグの内側余白を０にする */
-ul.snsbtniti{
-padding:0!important;
-}
-/* ボタン全体の位置調整 */
-.snsbtniti{
-display:flex;
-flex-flow:row wrap;
-justify-content:space-around;
-}
-/* ボタン同士の余白調整 */
-.snsbtniti li{
-flex:0 0 33%;
-text-align:center!important;
 }
 
 #my-window {
@@ -379,8 +452,9 @@ text-align:center!important;
 header {
 	width: 100%;
 	line-height: 60px;
-	background: #3c3c3c;
+	background: #8445be;
 }
+
 /* ロゴ */
 header .logo {
 	padding: 0 20px;
@@ -431,5 +505,4 @@ footer .logo span {
 .footer-list {
   color: #fff;
 }
-
 </style>

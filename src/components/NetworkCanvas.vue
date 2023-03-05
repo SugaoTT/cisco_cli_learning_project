@@ -10,9 +10,13 @@ import cytoscape from 'cytoscape';
 export default class NetWorkCanvas extends Vue{
     private cy!: cytoscape.Core;
     private cyop!: cytoscape.CytoscapeOptions;
+
+    //TODO: GUIManagerで一元管理できるようにする
     private router_count: number = 0;
     private switch_count: number = 0;
     private host_count: number = 0;
+
+
     //ケーブルを作成する際にケーブル名が重複することを避けるための値
     //実際はNodeに関するインスタンスを作成し、そこで各ノード毎にケーブルの本数を管理すればいいと思われる。
     private cable_count: number = 0;
@@ -79,6 +83,9 @@ export default class NetWorkCanvas extends Vue{
     public clickedNode(nodeID: string) {
       console.log(nodeID);
       console.log(this.connectStatus);
+
+      this.$emit("addWindow", nodeID);
+
       /**
        * 結線操作の処理を記述
        */
@@ -172,41 +179,40 @@ export default class NetWorkCanvas extends Vue{
           {
             selector: '.Host',
             style: {
-              'height': 45,
-              'width': 45,
-              //'background-image': "https://i.imgur.com/R1csOlU.jpg",
-
+              'height': 100,
+              'width': 100,
               "background-opacity": 0,
-              'background-image': "https://i.imgur.com/h7oybht.jpg",
+              'background-image': "https://i.imgur.com/AZYdRRK.png",
               'label': 'data(id)',
-              'text-margin-y': 65
+              'text-margin-y': 110
             }
           },
           {
             selector: '.Router',
             style: {
-              'height': 35,
-              'width': 60,
+              'height': 100,
+              'width': 100,
               "background-opacity": 0,
               //'background-image': "https://i.imgur.com/t5UZjW0.jpg",
-              'background-image': "https://i.imgur.com/XutTLFO.jpg",
+              'background-image': "https://i.imgur.com/h0CeoIu.png",
               'label': 'data(id)',
-              'text-margin-y': 53
+              'text-margin-y': 110
             }
           },
           {
             selector: '.Switch',
             style: {
-              'height': 26,
-              'width': 60,
+              'height': 100,
+              'width': 100,
               "background-opacity": 0,
-              'background-image': "https://i.imgur.com/84nNcg5.jpg",
+              'background-image': "https://i.imgur.com/VoUNsTC.png",
               //'background-image': "https://i.imgur.com/47f1aNF.jpg",
               'label': 'data(id)',
-              'text-margin-y': 45
+              'text-margin-y': 110
             }
           }
         ],
+        zoom: 0.7,
         wheelSensitivity: 0.1
       }
       this.cy = cytoscape(this.cyop);
@@ -281,7 +287,7 @@ export default class NetWorkCanvas extends Vue{
 <style scoped>
 #cy{
     width: 1000px;
-    height:500px;
+    height:700px;
     border: solid 1px;
     position: absolute;
 }
